@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Chat Client</title>
+</head>
+<body>
+    <h1>WebSocket Chat Client</h1>
+    <input type="text" id="messageInput" placeholder="Type your message here">
+    <button id="sendMessage">Send Message</button>
+    <div id="chatLog"></div>
+
+    <script>
+        // Connect to the WebSocket server
+        const socket = new WebSocket('ws://localhost:3000');
+
+        // Event listener for when the connection is open
+        socket.addEventListener('open', (event) => {
+            console.log('Connected to the server');
+        });
+
+        // Event listener for receiving messages from the server
+        socket.addEventListener('message', (event) => {
+            console.log('Message from server ', event.data);
+            const chatLog = document.getElementById('chatLog');
+            chatLog.innerHTML += `<div>${event.data}</div>`;
+        });
+
+        // Send a message to the server when the button is clicked
+        document.getElementById('sendMessage').addEventListener('click', () => {
+            const messageInput = document.getElementById('messageInput');
+            const message = messageInput.value;
+            if (message) {
+                console.log('Sending message to server: ', message);
+                socket.send(message);
+                messageInput.value = ''; // Clear the input field after sending
+            }
+        });
+    </script>
+</body>
+</html>
